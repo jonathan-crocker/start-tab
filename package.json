@@ -1,0 +1,28 @@
+{
+  "name": "start-tab",
+  "version": "1.0.0",
+  "description": "Custom new tab.",
+  "author": "Jonathan Crocker",
+  "license": "ISC",
+  "source": "src/index.html",
+  "scripts": {
+    "clean-dist": "if exist dist\\ rmdir /s /q dist && mkdir dist",
+    "copy-background": "copy src\\background.js dist\\background.js",
+    "copy-manifest": "copy src\\manifest.json dist\\manifest.json",
+    "build": "npm run clean-dist && npm run copy-background && npm run copy-manifest && parcel build --no-content-hash --no-source-maps"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.0.1",
+    "@types/chrome": "0.0.174",
+    "@types/luxon": "2.0.8",
+    "@types/react": "17.0.38",
+    "@types/react-dom": "17.0.11",
+    "bootstrap": "5.1.3",
+    "luxon": "2.3.0",
+    "parcel": "2.0.1",
+    "parcel-namer-without-hash": "0.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "typescript": "4.5.4"
+  }
+}

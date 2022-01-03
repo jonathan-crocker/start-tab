@@ -1,0 +1,30 @@
+$font-family-sans-serif: system-ui, sans-serif;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+html {
+    font-size: 0.8rem;
+}
+
+.logo {
+    width: 1em;
+    height: 1em;
+}
+
+.brand {
+    font-size: 3.4rem;
+}
+
+.favicon {
+    width: 16px;
+    height: 16px;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.link {
+    text-decoration: none;
+    color: #212529;
+}
