@@ -1,13 +1,10 @@
 {
     "manifest_version": 2,
     "name": "Start Tab",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "description": "A replacement new tab page which is faster and more streamlined.",
     "author": "Jonathan Crocker",
     "permissions" : [
-        "tabs",
-        "management",
-        "topSites",
         "bookmarks",
         "chrome://favicon/*"
     ],
