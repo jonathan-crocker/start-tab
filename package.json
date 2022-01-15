@@ -6,7 +6,7 @@
   "license": "ISC",
   "source": "src/index.html",
   "scripts": {
-    "clean-dist": "if exist dist\\ rmdir /s /q dist && mkdir dist",
+    "clean-dist": "(if exist dist\\ rmdir /s /q dist) && mkdir dist",
     "copy-background": "copy src\\background.js dist\\background.js",
     "copy-manifest": "copy src\\manifest.json dist\\manifest.json",
     "build": "npm run clean-dist && npm run copy-background && npm run copy-manifest && parcel build --no-content-hash --no-source-maps"
