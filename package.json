@@ -6,10 +6,8 @@
   "license": "ISC",
   "source": "src/index.html",
   "scripts": {
-    "clean-dist": "if exist dist\\ rmdir /s /q dist && mkdir dist",
-    "copy-background": "copy src\\background.js dist\\background.js",
-    "copy-manifest": "copy src\\manifest.json dist\\manifest.json",
-    "build": "npm run clean-dist && npm run copy-background && npm run copy-manifest && parcel build --no-content-hash --no-source-maps"
+    "prebuild": "mkdirp dist && rimraf dist/* && copyfiles --flat src/manifest.json src/background.js dist",
+    "build": "parcel build --no-content-hash --no-source-maps"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.0.1",
@@ -23,6 +21,9 @@
     "parcel-namer-without-hash": "0.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "typescript": "4.5.4"
+    "typescript": "4.5.4",
+    "rimraf": "3.0.2",
+    "mkdirp": "1.0.4",
+    "copyfiles": "2.4.1"
   }
 }
