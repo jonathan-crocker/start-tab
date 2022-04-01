@@ -6,6 +6,11 @@ html {
     font-size: 0.8rem;
 }
 
+.bg {
+    background-color: #efefef;
+    color: #292929;
+}
+
 .logo {
     width: 1em;
     height: 1em;
@@ -20,11 +25,28 @@ html {
     height: 16px;
 }
 
+.favlink {
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.8;
+
+    &:hover {
+        color: inherit;
+        opacity: 1;
+    }
+}
+
 .no-select {
     user-select: none;
 }
 
-.link {
-    text-decoration: none;
-    color: #212529;
+.card {
+    background-color: rgba(255,255,255,0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+    .bg {
+        background-color: #383838;
+        color: white;
+    }
 }

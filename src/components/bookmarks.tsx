@@ -54,8 +54,7 @@ const Bookmark = ({ bookmark }: BookmarkProps) => {
     return (
         <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 pt-3">
             <div className="text-truncate">
-                <img className="favicon" src={favIcon} alt="" />
-                <a className="px-3 text-nowrap link" href={bookmark.url} title={bookmark.title}>{bookmark.title}</a>
+                <a className="text-nowrap favlink" href={bookmark.url} title={bookmark.title}><img className="favicon" src={favIcon} alt="" />&nbsp;&nbsp;&nbsp;{bookmark.title}</a>
             </div>
         </div>
     );

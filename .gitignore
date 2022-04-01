@@ -1,7 +1,7 @@
 .git/
+.vs/
 .vscode/
 .parcel-cache/
 node_modules/
 dist/
-.vs/start-tab/config
-.vs
+obj/
