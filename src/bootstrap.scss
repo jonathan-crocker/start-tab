@@ -13,6 +13,13 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    background-color: #a5a5a5;
+}
+
+a {
+    &:hover {
+        color: inherit;
+    }
 }
 
 .brand {

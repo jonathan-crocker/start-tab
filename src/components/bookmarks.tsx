@@ -1,23 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-
-const findFolders = (bookmarks: chrome.bookmarks.BookmarkTreeNode[]) => {
-
-    let result = [];
-
-    for (const bookmark of bookmarks) {
-
-        if (bookmark.children && bookmark.children.length > 0) {
-            
-            if (bookmark.children.some(child => child.url))
-                result = [...result, bookmark];
-
-            result = [...result, ...findFolders(bookmark.children)];
-        }
-    }
-
-    return result;
-}
+import { useAppContext } from './contexts';
 
 interface FolderProps {
     folder: chrome.bookmarks.BookmarkTreeNode;
@@ -25,7 +8,7 @@ interface FolderProps {
 
 const Folder = ({ folder }: FolderProps) => {
 
-    const bookmarks = folder.children.filter(bookmark => bookmark.url).map(bookmark => <Bookmark bookmark={bookmark} />)
+    const bookmarks = folder.children!.filter(bookmark => bookmark.url).map(bookmark => <Bookmark bookmark={bookmark} />)
 
     return (
         <div className="row mt-4">
@@ -49,7 +32,7 @@ interface BookmarkProps {
 
 const Bookmark = ({ bookmark }: BookmarkProps) => {
 
-    const favIcon = `chrome://favicon/${bookmark.url}`;
+    const favIcon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(bookmark.url!)}&size=16`;
 
     return (
         <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 pt-3">
@@ -62,13 +45,14 @@ const Bookmark = ({ bookmark }: BookmarkProps) => {
 
 export const Bookmarks = () => {
 
-    const [nodes, setNodes] = useState<chrome.bookmarks.BookmarkTreeNode[]>([]);
+    const {bookmarks} = useAppContext();
+    const [folders, setFolders] = useState<JSX.Element[]>();
+
+    console.log('bookmarks re-rendered');
 
     useEffect(() => {
-        chrome.bookmarks.getTree(tree => setNodes(findFolders(tree)));
-    }, []);
-
-    const folders = nodes.map(folder => <Folder folder={folder} />);
+        setFolders(bookmarks.map(folder => <Folder folder={folder} />));
+    }, [bookmarks]);
 
     return (
         <>{folders}</>

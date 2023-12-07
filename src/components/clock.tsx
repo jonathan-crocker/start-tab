@@ -12,10 +12,12 @@ export const Clock = () => {
     }, 1000);
   }, []);
 
+  console.log('clock re-rendered');
+
   return (
-    <>
-      <h1>{`${now.toFormat('HH:mm')}`}</h1>
-      <h5 className="text-muted">{`${now.toFormat('EEEE')}, ${now.toLocaleString(DateTime.DATE_FULL)}`}</h5>
-    </>
+    <div className="clock">
+      <div className="time">{`${now.toFormat('HH:mm')}`}</div>
+      <div className="date text-muted">{`${now.toFormat('EEEE')}, ${now.toLocaleString(DateTime.DATE_FULL)}`}</div>
+    </div>
   );
 }
