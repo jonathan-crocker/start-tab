@@ -1,0 +1,79 @@
+$font-family-sans-serif: system-ui, sans-serif;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+html {
+    min-height: 100%;
+    font-size: 0.8rem;
+}
+
+body {
+    min-height: 100%;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.brand {
+    font-size: 3.4rem;
+    color: #ffffff;
+}
+
+.clock {
+    color: #ffffff;
+
+    .time {
+        font-size: 2em;
+        font-weight: 500;
+    }
+
+    .date {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+}
+
+.favicon {
+    width: 16px;
+    height: 16px;
+}
+
+.favlink {
+    text-decoration: none;
+    color: #ffffff;
+    opacity: 0.8;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.text-muted {
+    color: inherit !important;
+    opacity: 0.8;
+}
+
+.text-monospace {
+    font-family: monospace, monospace;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.card {
+    background-color: rgba(128,128,128,0.2);
+    backdrop-filter: blur(20px);
+    color: #ffffff;
+}
+
+.modal.fade {
+    backdrop-filter: blur(20px);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #383838;
+    }
+}

@@ -11,11 +11,16 @@ With an emphasis on speed and privacy, this new tab page loads far quicker than 
 
 # Changes
 
+## 1.2.0
+- Updated manifest to V3
+
 ## 1.1.0
-- Support for dark-theme
+- Added support for dark-theme
 
 ## 1.0.3
-- Support for Chrome
+- Added support for Chrome
 
 ## 1.0.0
-- Initial release for Edge
+- Real time clock
+- Bookmark list organised by folder
+- Initial support for Edge
