@@ -1,8 +1,7 @@
-import { DateTime } from 'luxon';
 import * as React from 'react';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-const flatternTree = (bookmarks: chrome.bookmarks.BookmarkTreeNode[]) => {
+const flattenTree = (bookmarks: chrome.bookmarks.BookmarkTreeNode[]) => {
 
     let result = [] as chrome.bookmarks.BookmarkTreeNode[];
 
@@ -13,7 +12,7 @@ const flatternTree = (bookmarks: chrome.bookmarks.BookmarkTreeNode[]) => {
             if (bookmark.children.some(child => child.url))
                 result = [...result, bookmark];
 
-            result = [...result, ...flatternTree(bookmark.children)];
+            result = [...result, ...flattenTree(bookmark.children)];
         }
     }
 
@@ -21,13 +20,18 @@ const flatternTree = (bookmarks: chrome.bookmarks.BookmarkTreeNode[]) => {
 }
 
 interface AppContextState {
-    now: DateTime;
     bookmarks: chrome.bookmarks.BookmarkTreeNode[];
 }
 
 const appContext = createContext<AppContextState | null>(null);
 
-export const useAppContext = () => useContext(appContext) as AppContextState;
+export const useAppContext = (): AppContextState => {
+    const context = useContext(appContext);
+    if (!context)
+        throw new Error('useAppContext must be used within an AppContext provider.');
+
+    return context;
+}
 
 interface AppContextProps {
     children?: ReactNode
@@ -35,15 +39,42 @@ interface AppContextProps {
 
 export const AppContext = ({children = null}: AppContextProps) => {
 
-    const [now, setNow] = useState(DateTime.local());
     const [bookmarks, setBookmarks] = useState<chrome.bookmarks.BookmarkTreeNode[]>([]);
 
+    useEffect(() => {
+        let latestRequest = 0;
 
+        const refreshBookmarks = () => {
+            const request = ++latestRequest;
 
-    useEffect(() => chrome.bookmarks.getTree(tree => setBookmarks(flatternTree(tree))), []);
+            chrome.bookmarks.getTree(tree => {
+                if (request === latestRequest)
+                    setBookmarks(flattenTree(tree));
+            });
+        };
+
+        chrome.bookmarks.onCreated.addListener(refreshBookmarks);
+        chrome.bookmarks.onRemoved.addListener(refreshBookmarks);
+        chrome.bookmarks.onChanged.addListener(refreshBookmarks);
+        chrome.bookmarks.onMoved.addListener(refreshBookmarks);
+        chrome.bookmarks.onChildrenReordered.addListener(refreshBookmarks);
+        chrome.bookmarks.onImportEnded.addListener(refreshBookmarks);
+
+        refreshBookmarks();
+
+        return () => {
+            latestRequest++;
+            chrome.bookmarks.onCreated.removeListener(refreshBookmarks);
+            chrome.bookmarks.onRemoved.removeListener(refreshBookmarks);
+            chrome.bookmarks.onChanged.removeListener(refreshBookmarks);
+            chrome.bookmarks.onMoved.removeListener(refreshBookmarks);
+            chrome.bookmarks.onChildrenReordered.removeListener(refreshBookmarks);
+            chrome.bookmarks.onImportEnded.removeListener(refreshBookmarks);
+        };
+    }, []);
 
     return (
-        <appContext.Provider value={{now: now, bookmarks: bookmarks}}>
+        <appContext.Provider value={{bookmarks}}>
             {children}
         </appContext.Provider>
     );

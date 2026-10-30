@@ -7,12 +7,12 @@ export const Clock = () => {
   const [now, setNow] = useState(DateTime.local());
 
   React.useEffect(() => {
-    setInterval(() => {
+    const interval = window.setInterval(() => {
       setNow(DateTime.local());
     }, 1000);
-  }, []);
 
-  console.log('clock re-rendered');
+    return () => window.clearInterval(interval);
+  }, []);
 
   return (
     <div className="clock">

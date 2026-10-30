@@ -15,16 +15,19 @@ export const useModal = (options?: Partial<BsModal.Options>): [(element: HTMLDiv
 }
 
 interface ModalProps {
+    id: string;
+    labelledBy: string;
+    dialogClassName?: string;
     header?: ReactNode;
     footer?: ReactNode;
     children?: ReactNode;    
 }
 
-export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ header, footer, children }, ref) => {
+export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ id, labelledBy, dialogClassName, header, footer, children }, ref) => {
 
     return (
-        <div ref={ref} className="modal fade" tabIndex={-1} aria-hidden="true">
-            <div className="modal-dialog modal-dialog-centered">
+        <div ref={ref} id={id} className="modal fade" tabIndex={-1} aria-labelledby={labelledBy} aria-hidden="true">
+            <div className={`modal-dialog modal-dialog-centered${dialogClassName ? ` ${dialogClassName}` : ''}`}>
                 <div className="modal-content">
                     {header && <div className="modal-header">{header}</div>}
                     {children && <div className="modal-body">{children}</div>}

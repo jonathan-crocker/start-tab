@@ -2,11 +2,17 @@
     "compileOnSave": false,
     "compilerOptions": {
         "strict": true,
-        "target": "ES5",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
         "jsx": "react",
+        "skipLibCheck": true,
+        "types": [
+            "chrome"
+        ],
         "lib": [
             "DOM",
-            "ES2021"
+            "ESNext"
         ]
     }
 }
