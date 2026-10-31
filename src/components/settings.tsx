@@ -8,9 +8,46 @@ const backgroundStartColorSettingKey = 'start-tab.backgroundColor';
 const backgroundEndColorSettingKey = 'start-tab.backgroundColorEnd';
 const backgroundModeSettingKey = 'start-tab.backgroundMode';
 const backgroundPhotoSettingKey = 'start-tab.backgroundPhoto';
+const backgroundTextureSettingKey = 'start-tab.backgroundTexture';
+const gradientDirectionSettingKey = 'start-tab.gradientDirection';
 const defaultBackgroundColor = '#a5a5a5';
 const maxBackgroundPhotoSize = 2 * 1024 * 1024;
 const supportedBackgroundPhotoTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+// Texture images are tiled PNGs with transparency, stored in src/public/textures.
+const backgroundTextures = [
+    { id: 'none', label: 'None', url: null },
+    { id: 'dots', label: 'Dots', url: '/textures/dots.png' },
+    { id: 'grid', label: 'Grid', url: '/textures/grid.png' },
+    { id: 'stripes', label: 'Diagonal', url: '/textures/stripes.png' },
+    { id: 'horizontal-stripes', label: 'Horizontal', url: '/textures/horizontal-stripes.png' },
+    { id: 'vertical-stripes', label: 'Vertical', url: '/textures/vertical-stripes.png' },
+    { id: 'rain-drops', label: 'Rain', url: '/textures/rain-drops.png' },
+    { id: 'honeycomb', label: 'Honeycomb', url: '/textures/honeycomb.png' },
+    { id: 'isometric-dots', label: 'Isometric', url: '/textures/isometric-dots.png' },
+    { id: 'small-grid', label: 'Small grid', url: '/textures/small-grid.png' },
+    { id: 'snowflakes', label: 'Snowflakes', url: '/textures/snowflakes.png' },
+    { id: 'noise', label: 'Noise', url: '/textures/noise.png' }
+] as const;
+
+type BackgroundTextureId = typeof backgroundTextures[number]['id'];
+
+const gradientDirections = [
+    { id: 'diagonal', label: 'Diagonal', angle: 'to bottom right' },
+    { id: 'top-bottom', label: 'Top to bottom', angle: '180deg' },
+    { id: 'left-right', label: 'Left to right', angle: '90deg' }
+] as const;
+
+type GradientDirectionId = typeof gradientDirections[number]['id'];
+
+const isGradientDirectionId = (id: string | null): id is GradientDirectionId =>
+    gradientDirections.some(direction => direction.id === id);
+
+const getGradientAngle = (id: GradientDirectionId) =>
+    gradientDirections.find(direction => direction.id === id)?.angle ?? 'to bottom right';
+
+const buildGradient = (angle: string, startColor: string, endColor: string) =>
+    `linear-gradient(${angle}, ${startColor}, ${endColor})`;
 
 const isHexColor = (color: string | null): color is string =>
     color !== null && /^#[0-9a-f]{6}$/i.test(color);
@@ -18,61 +55,125 @@ const isHexColor = (color: string | null): color is string =>
 const isBackgroundPhoto = (photo: string | null): photo is string =>
     photo !== null && /^data:image\/(?:jpeg|png|webp|gif);base64,/i.test(photo);
 
+const isBackgroundTextureId = (id: string | null): id is BackgroundTextureId =>
+    backgroundTextures.some(texture => texture.id === id);
+
+// The texture is the top layer, so it is drawn over the gradient or photo below it.
+const buildBackgroundImage = (textureUrl: string | null, baseImage: string) =>
+    `${textureUrl ? `url("${textureUrl}")` : 'none'}, ${baseImage}`;
+
 type BackgroundMode = 'gradient' | 'photo';
 
+// Each reader returns the saved value, or the default when storage is missing, invalid, or unavailable.
+const readShowClock = () => {
+    try {
+        return window.localStorage.getItem(clockSettingKey) !== 'false';
+    } catch {
+        return true;
+    }
+};
+
+const readBackgroundStartColor = () => {
+    try {
+        const savedColor = window.localStorage.getItem(backgroundStartColorSettingKey);
+        return isHexColor(savedColor) ? savedColor : defaultBackgroundColor;
+    } catch {
+        return defaultBackgroundColor;
+    }
+};
+
+const readBackgroundEndColor = (startColor: string) => {
+    try {
+        const savedColor = window.localStorage.getItem(backgroundEndColorSettingKey);
+        return isHexColor(savedColor) ? savedColor : startColor;
+    } catch {
+        return startColor;
+    }
+};
+
+const readBackgroundPhoto = (): string | null => {
+    try {
+        const savedPhoto = window.localStorage.getItem(backgroundPhotoSettingKey);
+        return isBackgroundPhoto(savedPhoto) ? savedPhoto : null;
+    } catch {
+        return null;
+    }
+};
+
+const readBackgroundMode = (photo: string | null): BackgroundMode => {
+    const fallback: BackgroundMode = photo ? 'photo' : 'gradient';
+    try {
+        const savedMode = window.localStorage.getItem(backgroundModeSettingKey);
+        if (savedMode === 'gradient' || (savedMode === 'photo' && photo))
+            return savedMode;
+        return fallback;
+    } catch {
+        return fallback;
+    }
+};
+
+const readBackgroundTexture = (): BackgroundTextureId => {
+    try {
+        const savedTexture = window.localStorage.getItem(backgroundTextureSettingKey);
+        return isBackgroundTextureId(savedTexture) ? savedTexture : 'none';
+    } catch {
+        return 'none';
+    }
+};
+
+const readGradientDirection = (): GradientDirectionId => {
+    try {
+        const savedDirection = window.localStorage.getItem(gradientDirectionSettingKey);
+        return isGradientDirectionId(savedDirection) ? savedDirection : 'diagonal';
+    } catch {
+        return 'diagonal';
+    }
+};
+
 export const useSettings = () => {
-    const [showClock, setShowClock] = useState(() => {
-        try {
-            return window.localStorage.getItem(clockSettingKey) !== 'false';
-        } catch {
-            return true;
-        }
-    });
-    const [backgroundStartColor, setBackgroundStartColor] = useState(() => {
-        try {
-            const savedColor = window.localStorage.getItem(backgroundStartColorSettingKey);
-            return isHexColor(savedColor) ? savedColor : defaultBackgroundColor;
-        } catch {
-            return defaultBackgroundColor;
-        }
-    });
-    const [backgroundEndColor, setBackgroundEndColor] = useState(() => {
-        try {
-            const savedColor = window.localStorage.getItem(backgroundEndColorSettingKey);
-            return isHexColor(savedColor) ? savedColor : backgroundStartColor;
-        } catch {
-            return backgroundStartColor;
-        }
-    });
-    const [backgroundPhoto, setBackgroundPhoto] = useState<string | null>(() => {
-        try {
-            const savedPhoto = window.localStorage.getItem(backgroundPhotoSettingKey);
-            return isBackgroundPhoto(savedPhoto) ? savedPhoto : null;
-        } catch {
-            return null;
-        }
-    });
-    const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(() => {
-        try {
-            const savedMode = window.localStorage.getItem(backgroundModeSettingKey);
-            if (savedMode === 'gradient' || (savedMode === 'photo' && backgroundPhoto))
-                return savedMode;
-            return backgroundPhoto ? 'photo' : 'gradient';
-        } catch {
-            return backgroundPhoto ? 'photo' : 'gradient';
-        }
-    });
+    const [showClock, setShowClock] = useState(readShowClock);
+    const [backgroundStartColor, setBackgroundStartColor] = useState(readBackgroundStartColor);
+    const [backgroundEndColor, setBackgroundEndColor] = useState(() => readBackgroundEndColor(backgroundStartColor));
+    const [backgroundPhoto, setBackgroundPhoto] = useState<string | null>(readBackgroundPhoto);
+    const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(() => readBackgroundMode(backgroundPhoto));
+    const [backgroundTexture, setBackgroundTexture] = useState<BackgroundTextureId>(readBackgroundTexture);
+    const [gradientDirection, setGradientDirection] = useState<GradientDirectionId>(readGradientDirection);
     const [backgroundPhotoError, setBackgroundPhotoError] = useState<string | null>(null);
     const photoReadRequest = React.useRef(0);
 
     React.useEffect(() => {
-        document.body.style.backgroundColor = backgroundStartColor;
-        document.body.style.backgroundImage = backgroundMode === 'photo' && backgroundPhoto
+        const textureUrl = backgroundTextures.find(texture => texture.id === backgroundTexture)?.url ?? null;
+        const baseImage = backgroundMode === 'photo' && backgroundPhoto
             ? `url("${backgroundPhoto}")`
-            : `linear-gradient(135deg, ${backgroundStartColor}, ${backgroundEndColor})`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-    }, [backgroundStartColor, backgroundEndColor, backgroundMode, backgroundPhoto]);
+            : buildGradient(getGradientAngle(gradientDirection), backgroundStartColor, backgroundEndColor);
+
+        document.body.style.backgroundColor = backgroundStartColor;
+        document.body.style.backgroundImage = buildBackgroundImage(textureUrl, baseImage);
+        document.body.style.backgroundSize = 'auto, cover';
+        document.body.style.backgroundRepeat = 'repeat, no-repeat';
+    }, [backgroundStartColor, backgroundEndColor, backgroundMode, backgroundPhoto, backgroundTexture, gradientDirection]);
+
+    // Browsers fire "storage" in other pages of this extension when settings change there, so re-read them here.
+    React.useEffect(() => {
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.storageArea !== window.localStorage)
+                return;
+
+            const startColor = readBackgroundStartColor();
+            const photo = readBackgroundPhoto();
+
+            setShowClock(readShowClock());
+            setBackgroundStartColor(startColor);
+            setBackgroundEndColor(readBackgroundEndColor(startColor));
+            setBackgroundPhoto(photo);
+            setBackgroundMode(readBackgroundMode(photo));
+            setBackgroundTexture(readBackgroundTexture());
+            setGradientDirection(readGradientDirection());
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     const handleClockVisibilityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const visible = event.currentTarget.checked;
@@ -175,6 +276,34 @@ export const useSettings = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleBackgroundTextureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const textureId = event.currentTarget.value;
+        if (!isBackgroundTextureId(textureId))
+            return;
+
+        setBackgroundTexture(textureId);
+
+        try {
+            window.localStorage.setItem(backgroundTextureSettingKey, textureId);
+        } catch {
+            // Keep the setting active for this page even if persistent storage is unavailable.
+        }
+    };
+
+    const handleGradientDirectionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const directionId = event.currentTarget.value;
+        if (!isGradientDirectionId(directionId))
+            return;
+
+        setGradientDirection(directionId);
+
+        try {
+            window.localStorage.setItem(gradientDirectionSettingKey, directionId);
+        } catch {
+            // Keep the setting active for this page even if persistent storage is unavailable.
+        }
+    };
+
     const handleRemoveBackgroundPhoto = () => {
         photoReadRequest.current++;
 
@@ -202,12 +331,16 @@ export const useSettings = () => {
         backgroundMode,
         backgroundPhoto,
         backgroundPhotoError,
+        backgroundTexture,
+        gradientDirection,
         handleClockVisibilityChange,
         handleBackgroundStartColorChange,
         handleBackgroundEndColorChange,
         handleBackgroundModeChange,
         handleBackgroundPhotoChange,
-        handleRemoveBackgroundPhoto
+        handleRemoveBackgroundPhoto,
+        handleBackgroundTextureChange,
+        handleGradientDirectionChange
     };
 };
 
@@ -220,12 +353,16 @@ export const Settings = ({
     backgroundMode,
     backgroundPhoto,
     backgroundPhotoError,
+    backgroundTexture,
+    gradientDirection,
     handleClockVisibilityChange,
     handleBackgroundStartColorChange,
     handleBackgroundEndColorChange,
     handleBackgroundModeChange,
     handleBackgroundPhotoChange,
-    handleRemoveBackgroundPhoto
+    handleRemoveBackgroundPhoto,
+    handleBackgroundTextureChange,
+    handleGradientDirectionChange
 }: SettingsProps) => (
     <>
         <button
@@ -322,6 +459,35 @@ export const Settings = ({
                     </div>
                 </div>
             )}
+            {backgroundMode === 'gradient' && (
+                <fieldset className="mt-3">
+                    <legend className="form-label">Direction</legend>
+                    <div className="settings-texture-options">
+                        {gradientDirections.map(direction => {
+                            const checked = gradientDirection === direction.id;
+                            const previewStyle: React.CSSProperties = {
+                                backgroundImage: buildGradient(direction.angle, backgroundStartColor, backgroundEndColor)
+                            };
+
+                            return (
+                                <label
+                                    key={direction.id}
+                                    className={`settings-texture-option${checked ? ' active' : ''}`}>
+                                    <input
+                                        className="visually-hidden"
+                                        type="radio"
+                                        name="gradientDirection"
+                                        value={direction.id}
+                                        checked={checked}
+                                        onChange={handleGradientDirectionChange} />
+                                    <span className="settings-texture-preview" style={previewStyle} aria-hidden="true" />
+                                    <span className="small">{direction.label}</span>
+                                </label>
+                            );
+                        })}
+                    </div>
+                </fieldset>
+            )}
             {backgroundMode === 'photo' && (
                 <div className="settings-photo-picker">
                     <label className="form-label" htmlFor="backgroundPhoto">Choose an image</label>
@@ -349,6 +515,39 @@ export const Settings = ({
                     {backgroundPhotoError && <div className="small text-danger mt-2" role="alert">{backgroundPhotoError}</div>}
                 </div>
             )}
+            <hr className="settings-divider" />
+            <fieldset>
+                <legend className="form-label">Texture</legend>
+                <div className="settings-texture-options">
+                    {backgroundTextures.map(texture => {
+                        const checked = backgroundTexture === texture.id;
+                        const previewStyle: React.CSSProperties = {
+                            backgroundImage: buildBackgroundImage(
+                                texture.url,
+                                buildGradient(getGradientAngle(gradientDirection), backgroundStartColor, backgroundEndColor)
+                            ),
+                            backgroundSize: 'auto, cover',
+                            backgroundRepeat: 'repeat, no-repeat'
+                        };
+
+                        return (
+                            <label
+                                key={texture.id}
+                                className={`settings-texture-option${checked ? ' active' : ''}`}>
+                                <input
+                                    className="visually-hidden"
+                                    type="radio"
+                                    name="backgroundTexture"
+                                    value={texture.id}
+                                    checked={checked}
+                                    onChange={handleBackgroundTextureChange} />
+                                <span className="settings-texture-preview" style={previewStyle} aria-hidden="true" />
+                                <span className="small">{texture.label}</span>
+                            </label>
+                        );
+                    })}
+                </div>
+            </fieldset>
         </Modal>
     </>
 );
