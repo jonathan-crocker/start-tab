@@ -7,9 +7,9 @@ Make changes that are easy to understand, maintain, and review. Follow the proje
 ## Before Changes
 
 - Inspect the repository structure and read relevant files before editing.
-- Check `readme.md`, `package.json`, configuration, and nearby code to learn the project`s framework, tooling, scripts, and conventions.
+- Check `docs/REQUIREMENTS.md`, `README.md`, `package.json`, configuration, and nearby code to learn the project`s framework, tooling, scripts, and conventions.
 - Look for existing components, hooks, utilities, types, and tests that can be reused.
-- If repository instructions exist in other `agents.md` files, follow the instructions that apply to the files being changed.
+- If repository instructions exist in other `AGENTS.md` files, follow the instructions that apply to the files being changed.
 - Do not assume a particular bundler, browser-extension manifest version, styling system, or test framework; use what the project already has.
 
 ## Code and Architecture
@@ -48,6 +48,7 @@ Make changes that are easy to understand, maintain, and review. Follow the proje
 - Run the relevant existing lint, type-check, test, and build scripts when practical. Use scripts defined in `package.json`; do not invent commands.
 - If a check cannot be run, say which one and why. Do not claim checks passed unless they did.
 - Review the final diff for accidental changes, unused code, and consistency with nearby files.
+- Once changes have been made confirm the app still builds successfully.
 
 ## Dependencies and Configuration
 

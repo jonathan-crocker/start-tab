@@ -8,6 +8,7 @@ Start Tab turns your new tab into a calm, useful launchpad for the sites you vis
 
 - **Your bookmarks, organized.** Browse links by folder, then drag them into the order that works for you. Changes are saved directly to your browser bookmarks.
 - **Time at a glance.** See the current time and date, or switch the clock off in Settings.
+- **A checklist within reach.** Add, tick off, and remove quick to-do items, or hide the panel in Settings. Items are stored locally.
 - **Make it yours.** Choose a two-colour gradient or use your own background image. Your background choice is stored locally.
 - **Ready whenever you are.** Start Tab runs as a local extension, works offline after installation, and requires no account.
 

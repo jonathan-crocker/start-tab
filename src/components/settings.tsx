@@ -4,6 +4,7 @@ import { FiSettings } from 'react-icons/fi';
 import { Modal } from './modals';
 
 const clockSettingKey = 'start-tab.showClock';
+const checklistSettingKey = 'start-tab.showChecklist';
 const backgroundStartColorSettingKey = 'start-tab.backgroundColor';
 const backgroundEndColorSettingKey = 'start-tab.backgroundColorEnd';
 const backgroundModeSettingKey = 'start-tab.backgroundMode';
@@ -73,6 +74,14 @@ const readShowClock = () => {
     }
 };
 
+const readShowChecklist = () => {
+    try {
+        return window.localStorage.getItem(checklistSettingKey) !== 'false';
+    } catch {
+        return true;
+    }
+};
+
 const readBackgroundStartColor = () => {
     try {
         const savedColor = window.localStorage.getItem(backgroundStartColorSettingKey);
@@ -132,6 +141,7 @@ const readGradientDirection = (): GradientDirectionId => {
 
 export const useSettings = () => {
     const [showClock, setShowClock] = useState(readShowClock);
+    const [showChecklist, setShowChecklist] = useState(readShowChecklist);
     const [backgroundStartColor, setBackgroundStartColor] = useState(readBackgroundStartColor);
     const [backgroundEndColor, setBackgroundEndColor] = useState(() => readBackgroundEndColor(backgroundStartColor));
     const [backgroundPhoto, setBackgroundPhoto] = useState<string | null>(readBackgroundPhoto);
@@ -163,6 +173,7 @@ export const useSettings = () => {
             const photo = readBackgroundPhoto();
 
             setShowClock(readShowClock());
+            setShowChecklist(readShowChecklist());
             setBackgroundStartColor(startColor);
             setBackgroundEndColor(readBackgroundEndColor(startColor));
             setBackgroundPhoto(photo);
@@ -181,6 +192,17 @@ export const useSettings = () => {
 
         try {
             window.localStorage.setItem(clockSettingKey, String(visible));
+        } catch {
+            // Keep the setting active for this page even if persistent storage is unavailable.
+        }
+    };
+
+    const handleChecklistVisibilityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const visible = event.currentTarget.checked;
+        setShowChecklist(visible);
+
+        try {
+            window.localStorage.setItem(checklistSettingKey, String(visible));
         } catch {
             // Keep the setting active for this page even if persistent storage is unavailable.
         }
@@ -326,6 +348,7 @@ export const useSettings = () => {
 
     return {
         showClock,
+        showChecklist,
         backgroundStartColor,
         backgroundEndColor,
         backgroundMode,
@@ -334,6 +357,7 @@ export const useSettings = () => {
         backgroundTexture,
         gradientDirection,
         handleClockVisibilityChange,
+        handleChecklistVisibilityChange,
         handleBackgroundStartColorChange,
         handleBackgroundEndColorChange,
         handleBackgroundModeChange,
@@ -348,6 +372,7 @@ type SettingsProps = ReturnType<typeof useSettings>;
 
 export const Settings = ({
     showClock,
+    showChecklist,
     backgroundStartColor,
     backgroundEndColor,
     backgroundMode,
@@ -356,6 +381,7 @@ export const Settings = ({
     backgroundTexture,
     gradientDirection,
     handleClockVisibilityChange,
+    handleChecklistVisibilityChange,
     handleBackgroundStartColorChange,
     handleBackgroundEndColorChange,
     handleBackgroundModeChange,
@@ -405,6 +431,21 @@ export const Settings = ({
                         id="showClock"
                         checked={showClock}
                         onChange={handleClockVisibilityChange} />
+                </div>
+            </div>
+            <div className="settings-clock-row mt-3">
+                <div>
+                    <label className="form-label mb-0" htmlFor="showChecklist">Checklist</label>
+                    <div className="small text-muted">Show the checklist panel</div>
+                </div>
+                <div className="form-check form-switch mb-0">
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="showChecklist"
+                        checked={showChecklist}
+                        onChange={handleChecklistVisibilityChange} />
                 </div>
             </div>
             <hr className="settings-divider" />

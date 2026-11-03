@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Bookmarks } from './bookmarks';
+import { Checklist } from './checklist';
 import { Clock } from './clock';
 import { Settings, useSettings } from './settings';
 
@@ -17,7 +18,16 @@ export const App = () => {
                     {settings.showClock && <Clock />}
                 </div>
             </div>
-            <Bookmarks />
+            <div className="row">
+                <div className={settings.showChecklist ? 'col-lg-9' : 'col-12'}>
+                    <Bookmarks />
+                </div>
+                {settings.showChecklist && (
+                    <div className="col-lg-3 checklist-column">
+                        <Checklist />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
