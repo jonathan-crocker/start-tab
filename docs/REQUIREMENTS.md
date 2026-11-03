@@ -53,7 +53,9 @@
 14. By default, the page must show the clock and checklist with a gray gradient and no texture.
 15. The settings dialog must adapt to the system light or dark appearance.
 16. When the checklist is visible, the page must show it beside the bookmarks on a large screen.
-17. When the checklist is hidden, the bookmarks must use the full page width.
+17. Checklist must be either as long as the page or reach as far as the last bookmark panel, which ever is longer.
+18. When the checklist is hidden, the bookmarks must use the full page width.
+19. The user must be able to change the tint of the pannels from white through to black using a slider in the Settings.
 
 ## Storage and use
 

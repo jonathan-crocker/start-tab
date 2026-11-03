@@ -11,7 +11,9 @@ const backgroundModeSettingKey = 'start-tab.backgroundMode';
 const backgroundPhotoSettingKey = 'start-tab.backgroundPhoto';
 const backgroundTextureSettingKey = 'start-tab.backgroundTexture';
 const gradientDirectionSettingKey = 'start-tab.gradientDirection';
+const panelTintSettingKey = 'start-tab.panelTint';
 const defaultBackgroundColor = '#a5a5a5';
+const defaultPanelTint = 0;
 const maxBackgroundPhotoSize = 2 * 1024 * 1024;
 const supportedBackgroundPhotoTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
@@ -139,6 +141,15 @@ const readGradientDirection = (): GradientDirectionId => {
     }
 };
 
+const readPanelTint = () => {
+    try {
+        const savedTint = Number(window.localStorage.getItem(panelTintSettingKey));
+        return Number.isInteger(savedTint) && savedTint >= 0 && savedTint <= 100 ? savedTint : defaultPanelTint;
+    } catch {
+        return defaultPanelTint;
+    }
+};
+
 export const useSettings = () => {
     const [showClock, setShowClock] = useState(readShowClock);
     const [showChecklist, setShowChecklist] = useState(readShowChecklist);
@@ -148,6 +159,7 @@ export const useSettings = () => {
     const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>(() => readBackgroundMode(backgroundPhoto));
     const [backgroundTexture, setBackgroundTexture] = useState<BackgroundTextureId>(readBackgroundTexture);
     const [gradientDirection, setGradientDirection] = useState<GradientDirectionId>(readGradientDirection);
+    const [panelTint, setPanelTint] = useState(readPanelTint);
     const [backgroundPhotoError, setBackgroundPhotoError] = useState<string | null>(null);
     const photoReadRequest = React.useRef(0);
 
@@ -162,6 +174,11 @@ export const useSettings = () => {
         document.body.style.backgroundSize = 'auto, cover';
         document.body.style.backgroundRepeat = 'repeat, no-repeat';
     }, [backgroundStartColor, backgroundEndColor, backgroundMode, backgroundPhoto, backgroundTexture, gradientDirection]);
+
+    React.useEffect(() => {
+        const channel = Math.round(255 * (1 - panelTint / 100));
+        document.documentElement.style.setProperty('--panel-tint-rgb', `${channel}, ${channel}, ${channel}`);
+    }, [panelTint]);
 
     // Browsers fire "storage" in other pages of this extension when settings change there, so re-read them here.
     React.useEffect(() => {
@@ -180,6 +197,7 @@ export const useSettings = () => {
             setBackgroundMode(readBackgroundMode(photo));
             setBackgroundTexture(readBackgroundTexture());
             setGradientDirection(readGradientDirection());
+            setPanelTint(readPanelTint());
         };
 
         window.addEventListener('storage', handleStorageChange);
@@ -326,6 +344,20 @@ export const useSettings = () => {
         }
     };
 
+    const handlePanelTintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const tint = Number(event.currentTarget.value);
+        if (!Number.isInteger(tint) || tint < 0 || tint > 100)
+            return;
+
+        setPanelTint(tint);
+
+        try {
+            window.localStorage.setItem(panelTintSettingKey, String(tint));
+        } catch {
+            // Keep the setting active for this page even if persistent storage is unavailable.
+        }
+    };
+
     const handleRemoveBackgroundPhoto = () => {
         photoReadRequest.current++;
 
@@ -356,6 +388,7 @@ export const useSettings = () => {
         backgroundPhotoError,
         backgroundTexture,
         gradientDirection,
+        panelTint,
         handleClockVisibilityChange,
         handleChecklistVisibilityChange,
         handleBackgroundStartColorChange,
@@ -364,7 +397,8 @@ export const useSettings = () => {
         handleBackgroundPhotoChange,
         handleRemoveBackgroundPhoto,
         handleBackgroundTextureChange,
-        handleGradientDirectionChange
+        handleGradientDirectionChange,
+        handlePanelTintChange
     };
 };
 
@@ -380,6 +414,7 @@ export const Settings = ({
     backgroundPhotoError,
     backgroundTexture,
     gradientDirection,
+    panelTint,
     handleClockVisibilityChange,
     handleChecklistVisibilityChange,
     handleBackgroundStartColorChange,
@@ -388,7 +423,8 @@ export const Settings = ({
     handleBackgroundPhotoChange,
     handleRemoveBackgroundPhoto,
     handleBackgroundTextureChange,
-    handleGradientDirectionChange
+    handleGradientDirectionChange,
+    handlePanelTintChange
 }: SettingsProps) => (
     <>
         <button
@@ -448,6 +484,28 @@ export const Settings = ({
                         onChange={handleChecklistVisibilityChange} />
                 </div>
             </div>
+            <fieldset className="mt-3">
+                <div className="d-flex align-items-baseline justify-content-between gap-2">
+                    <label className="form-label mb-0" htmlFor="panelTint">Panel tint</label>
+                    <output className="small text-muted" htmlFor="panelTint">
+                        {panelTint === 0 ? 'White' : panelTint === 100 ? 'Black' : `${panelTint}%`}
+                    </output>
+                </div>
+                <input
+                    className="form-range"
+                    type="range"
+                    id="panelTint"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={panelTint}
+                    aria-valuetext={panelTint === 0 ? 'White' : panelTint === 100 ? 'Black' : `${panelTint}% from white to black`}
+                    onChange={handlePanelTintChange} />
+                <div className="d-flex justify-content-between small text-muted" aria-hidden="true">
+                    <span>White</span>
+                    <span>Black</span>
+                </div>
+            </fieldset>
             <hr className="settings-divider" />
             <fieldset className="mb-3">
                 <legend className="form-label">Background</legend>

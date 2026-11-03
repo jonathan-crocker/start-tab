@@ -28,6 +28,16 @@ a {
     color: #ffffff;
 }
 
+.start-tab-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-content {
+    flex: 1 0 auto;
+}
+
 .settings-button {
     padding: 0.25rem;
     border: 0;
@@ -131,7 +141,7 @@ a {
 }
 
 .card {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(var(--panel-tint-rgb, 255, 255, 255), 0.12);
     border-color: rgba(255, 255, 255, 0.22);
     backdrop-filter: blur(10px) saturate(110%);
     color: #ffffff;
@@ -140,7 +150,6 @@ a {
 .checklist {
     flex: 1;
     min-height: 0;
-    max-height: calc(100vh - 9rem);
 
     .card-body {
         flex: 0 0 auto;
