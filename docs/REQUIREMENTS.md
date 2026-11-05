@@ -3,7 +3,7 @@
 ## Bookmarks
 
 1. A bookmark is a saved link. A folder groups bookmarks.
-2. A favicon is a small image that identifies a site.
+2. A favicon is an image that identifies a site.
 3. The page must show browser bookmarks under their folders.
 4. Each bookmark must show its title and favicon.
 5. Selecting a bookmark must open its saved link in the browser.
@@ -12,6 +12,9 @@
 8. The user must be able to drag a bookmark before or after another bookmark to change its order.
 9. The user must be able to drag a bookmark onto a folder to move it to that folder.
 10. If a bookmark move fails, the page must show an error message.
+11. Bookmarks must be displayed in a grid with a large favicon and the title below.
+12. Root folders display as pannels on the page.
+13. Folders within other folders must be displayed as a square the same size as a bookmark with the text below the same as a bookmark. The icon must be divided into 4 with the first 4 favicon of bookmarks contained within displayed.
 
 ## Clock and date
 

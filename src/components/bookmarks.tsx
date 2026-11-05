@@ -40,7 +40,7 @@ const Folder = ({ folder, onMove }: FolderProps) => {
                     <div className="card-body">
                         <h4 className="card-title p-0 m-0">{folder.title}</h4>
                     </div>
-                    <div className="row px-3 pb-3">
+                    <div className="bookmark-grid px-3 pb-3">
                         {bookmarks}
                     </div>
                 </div>
@@ -115,11 +115,11 @@ const Bookmark = ({ bookmark, siblingCount, onMove }: BookmarkProps) => {
         }
     };
 
-    const favIcon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(bookmark.url!)}&size=16`;
+    const favIcon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(bookmark.url!)}&size=64`;
 
     return (
         <div
-            className={`bookmark-item col-lg-2 col-md-3 col-sm-6 col-xs-12 pt-3${dropPosition ? ` bookmark-drop-${dropPosition}` : ''}${isDragging ? ' bookmark-dragging' : ''}`}
+            className={`bookmark-item${dropPosition ? ` bookmark-drop-${dropPosition}` : ''}${isDragging ? ' bookmark-dragging' : ''}`}
             draggable
             tabIndex={0}
             aria-label={`${bookmark.title}. Drag to reorder or move to another folder; press Alt+ArrowUp or Alt+ArrowDown to move to the start or end of this folder.`}
@@ -130,9 +130,10 @@ const Bookmark = ({ bookmark, siblingCount, onMove }: BookmarkProps) => {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onKeyDown={handleKeyDown}>
-            <div className="text-truncate">
-                <a className="text-nowrap favlink" href={bookmark.url} title={bookmark.title}><img className="favicon" src={favIcon} alt="" />&nbsp;&nbsp;&nbsp;{bookmark.title}</a>
-            </div>
+            <a className="favlink bookmark-link" href={bookmark.url} title={bookmark.title}>
+                <img className="favicon" src={favIcon} alt="" />
+                <span className="bookmark-title">{bookmark.title}</span>
+            </a>
         </div>
     );
 }
