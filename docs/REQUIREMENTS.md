@@ -2,30 +2,27 @@
 
 ## Bookmarks
 
-1. A bookmark is a saved link. A folder groups bookmarks.
-2. A favicon is an image that identifies a site.
-3. The page must show browser bookmarks under their folders.
-4. Each bookmark must show its title and favicon.
-5. Selecting a bookmark must open its saved link in the browser.
-6. The page must reflect changes to bookmarks made in the browser or in another Start Tab page.
-7. The user must be able to reach each bookmark with the keyboard.
-8. The user must be able to drag a bookmark before or after another bookmark to change its order.
-9. A vertical bar must be displayed between the two bookmarks the user has dragged the bookmark to.
-10. The user must be able to drag a bookmark onto a folder to move it to that folder.
-11. If a bookmark move fails, the page must show an error message.
-12. Bookmarks must be displayed in a grid with the favicon and the title below.
-13. The user must be able to drag the folder titles to re-order the folders.
-14. A horizontal line must be displayed between the two folders that the user has dragged the folder to and must not display a horizontal line between bookmarks.
+1. A bookmark is a saved link.
+2. A folder groups bookmarks.
+3. A favicon is an image that identifies a site.
+4. The page must show browser bookmarks under their folders.
+5. Each bookmark must show its title and favicon.
+6. Selecting a bookmark must open its saved link in the browser.
+7. The page must reflect changes to bookmarks made in the browser or in another Start Tab page.
+8. The user must be able to reach each bookmark with the keyboard.
+9. The user must be able to drag a bookmark before or after another bookmark to change its order.
+10. A vertical bar must be displayed between the two bookmarks the user has dragged the bookmark to.
+11. The user must be able to drag a bookmark onto a folder to move it to that folder.
+12. If a bookmark move fails, the page must show an error message.
+13. Bookmarks must be displayed in a grid with the favicon and the title below.
+14. The user must be able to drag the folder titles to re-order the folders.
+15. A horizontal line must be displayed between the two folders that the user has dragged the folder to.
 
 ## Clock and date
 
-1. A tooltip is a short message shown when the pointer rests on text.
-2. The page must show the current local time in 24-hour format and the current date.
-3. The clock must update at least once per second.
-4. When a historical event exists for the current date, the date must show one event and its year in a tooltip.
-5. When several events exist for the current date, the page must choose one at random.
-6. The user must be able to hide or show the clock in Settings.
-7. The historical event list should load after the rest of the page.
+1. The page must show the current local time in 24-hour format and the current date.
+2. The clock must update at least once per second.
+3. The user must be able to hide or show the clock in Settings.
 
 ## Checklist
 
