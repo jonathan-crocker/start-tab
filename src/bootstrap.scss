@@ -73,8 +73,8 @@ a {
 }
 
 .favicon {
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
 }
 
 .bookmark-grid {
@@ -116,11 +116,11 @@ a {
     }
 
     &.bookmark-drop-before::before {
-        left: 0.25rem;
+        left: -0.25rem;
     }
 
     &.bookmark-drop-after::after {
-        right: 0.25rem;
+        right: -0.25rem;
     }
 }
 
@@ -131,6 +131,57 @@ a {
 
     &:hover {
         opacity: 1;
+    }
+}
+
+.bookmark-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    height: 100%;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.folder-title {
+    cursor: grab;
+
+    &:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+
+    &.folder-dragging {
+        cursor: grabbing;
+        opacity: 0.5;
+    }
+
+}
+
+.folder-panel {
+    position: relative;
+
+    &.folder-drop-before::before,
+    &.folder-drop-after::after {
+        position: absolute;
+        right: 0;
+        left: 0;
+        height: 3px;
+        border-radius: 2px;
+        background-color: #ffffff;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+        content: "";
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    &.folder-drop-before::before {
+        top: -0.75rem;
+    }
+
+    &.folder-drop-after::after {
+        bottom: -0.75rem;
     }
 }
 

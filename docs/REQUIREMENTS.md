@@ -10,11 +10,12 @@
 6. The page must reflect changes to bookmarks made in the browser or in another Start Tab page.
 7. The user must be able to reach each bookmark with the keyboard.
 8. The user must be able to drag a bookmark before or after another bookmark to change its order.
-9. The user must be able to drag a bookmark onto a folder to move it to that folder.
-10. If a bookmark move fails, the page must show an error message.
-11. Bookmarks must be displayed in a grid with a large favicon and the title below.
-12. Root folders display as pannels on the page.
-13. Folders within other folders must be displayed as a square the same size as a bookmark with the text below the same as a bookmark. The icon must be divided into 4 with the first 4 favicon of bookmarks contained within displayed.
+9. A vertical bar must be displayed between the two bookmarks the user has dragged the bookmark to.
+10. The user must be able to drag a bookmark onto a folder to move it to that folder.
+11. If a bookmark move fails, the page must show an error message.
+12. Bookmarks must be displayed in a grid with the favicon and the title below.
+13. The user must be able to drag the folder titles to re-order the folders.
+14. A horizontal line must be displayed between the two folders that the user has dragged the folder to and must not display a horizontal line between bookmarks.
 
 ## Clock and date
 
