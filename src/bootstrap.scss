@@ -73,8 +73,8 @@ a {
 }
 
 .favicon {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
 }
 
 .bookmark-grid {
@@ -94,11 +94,6 @@ a {
     &:focus-visible {
         outline: 2px solid #ffffff;
         outline-offset: 2px;
-    }
-
-    &.bookmark-dragging,
-    &.bookmark-dragging a {
-        cursor: grabbing;
     }
 
     &.bookmark-drop-before::before,
@@ -145,15 +140,12 @@ a {
 }
 
 .folder-title {
-    cursor: grab;
-
     &:focus-visible {
         outline: 2px solid #ffffff;
         outline-offset: 2px;
     }
 
     &.folder-dragging {
-        cursor: grabbing;
         opacity: 0.5;
     }
 
@@ -274,7 +266,6 @@ a {
         align-items: flex-start;
         gap: 0.5rem;
         padding: 0.375rem 0;
-        cursor: grab;
 
         &:focus-visible {
             outline: 2px solid #ffffff;
@@ -283,7 +274,6 @@ a {
 
         &.checklist-dragging {
             opacity: 0.45;
-            cursor: grabbing;
         }
 
         &.checklist-drop-before::before,

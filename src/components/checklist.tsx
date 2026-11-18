@@ -204,7 +204,6 @@ export const Checklist = () => {
             <div className="card-body pb-2">
                 <div className="d-flex align-items-baseline justify-content-between gap-2">
                     <h4 className="card-title p-0 m-0">Checklist</h4>
-                    <span className="small text-muted">{completed} of {items.length} done</span>
                 </div>
                 <form className="checklist-form mt-2" onSubmit={handleSubmit}>
                     <label className="visually-hidden" htmlFor="checklistNewItem">New checklist item</label>
@@ -212,7 +211,6 @@ export const Checklist = () => {
                         className="form-control form-control-sm checklist-input"
                         type="text"
                         id="checklistNewItem"
-                        placeholder="Add an item"
                         maxLength={maxItemLength}
                         autoComplete="off"
                         value={draft}

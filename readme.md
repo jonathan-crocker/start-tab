@@ -20,6 +20,11 @@ Start Tab turns your new tab into a calm, useful launchpad for the sites you vis
 
 ## Changes
 
+## 1.4.0
+- Added more gradient options.
+- Added overlay background textures.
+- Added checklist.
+
 ## 1.3.0
 - Updated project dependencies
 - Migrated the build tooling from Parcel to Vite
